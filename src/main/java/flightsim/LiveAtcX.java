@@ -35,12 +35,28 @@ public class LiveAtcX {
 	private static Logger log = Logger.getLogger("LiveAtcX");
 
 	public static void main(String[] args) throws Exception {
+		
+		if( args.length > 0 && !args[0].isEmpty())
+		{
+			loadProperties();
+			String url = props.getProperty(args[0]);
+			log.info("Url=" + url);
+
+			if (url != null) {
+
+				// there is a URL, so start streaming from it
+				Player player = new Player(url);
+				player.start();
+				player.join();
+				System.exit(0);
+			}
+		}
 		new LiveAtcX().run();
 
 	}
-
-	private void run() throws Exception {
-
+	
+	static private void loadProperties() throws Exception
+	{
 		/*
 		 * try to open a properties file containing lines with frequency=url
 		 * i.e. 132800=http://liveatc.net/something
@@ -64,6 +80,12 @@ public class LiveAtcX {
 		
 		props.list(System.out);
 
+	}
+
+	private void run() throws Exception {
+
+		loadProperties();
+		
 		String host = props.getProperty("host", "localhost");
 		String port = props.getProperty("port", "9017");
 
