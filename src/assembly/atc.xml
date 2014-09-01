@@ -11,6 +11,7 @@
 			<outputDirectory>/</outputDirectory>
 			<includes>
 				<include>run.bat</include>
+				<include>README*</include>
 			</includes>
 		</fileSet>
 		<fileSet>
