@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import flightsim.simconnect.SimConnect;
@@ -104,6 +105,8 @@ public class LiveAtcX {
 				SimConnectDataType.STRING32);
 		sc.addToDataDefinition(dataDefID, "COM ACTIVE FREQUENCY:1", null,
 				SimConnectDataType.INT32);
+		sc.addToDataDefinition(dataDefID, "COM STATUS:1", null,
+				SimConnectDataType.INT32);
 
 		// get warned every 4 seconds when in sim mode
 		sc.subscribeToSystemEvent(fourSeceventID, "4sec");
@@ -111,7 +114,7 @@ public class LiveAtcX {
 
 		dt.addOpenHandler(new OpenHandler() {
 			public void handleOpen(SimConnect sender, RecvOpen e) {
-				System.out.println("Connected to " + e.getApplicationName());
+				log.info("Connected to " + e.getApplicationName());
 			}
 		});
 		// add an event handler to receive events every 4 seconds
@@ -136,11 +139,19 @@ public class LiveAtcX {
 				String atcType = e.getDataString32();
 				String atcID = e.getDataString32();
 				int freq = e.getDataInt32();
+				int status = e.getDataInt32();
+				
 				// print to users
 				log.fine("Plane id#" + e.getObjectID() + " no "
 						+ e.getEntryNumber() + "/" + e.getOutOf());
 				log.fine("\tType/ID: " + atcType + " " + atcID);
 				log.fine("\nFreq: " + freq);
+				log.fine("\nStatus: " + status);
+				
+				if( status != 0)
+				{
+					freq = 0;
+				}
 
 				// if the radio frequency is different from the last one that
 				// was processed, then
@@ -165,9 +176,9 @@ public class LiveAtcX {
 					// lookup the new frequency to see if there is a URL for it
 					String url = props.getProperty(Integer
 							.toString(freq / 1000));
-					log.info("New url=" + url);
 
 					if (url != null) {
+						log.info("New url=" + url);
 
 						// there is a URL, so start streaming from it
 						player = new Player(url);
@@ -181,9 +192,9 @@ public class LiveAtcX {
 					// a player on the same freq
 					String url = props.getProperty(Integer
 							.toString(freq / 1000));
-					log.info("New url=" + url);
 
 					if (url != null) {
+						log.info("New url=" + url);
 						player = new Player(url);
 						player.start();
 					}
