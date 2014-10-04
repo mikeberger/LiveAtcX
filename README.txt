@@ -1,5 +1,5 @@
-LiveAtcX is a super-primitive tool to allow live streaming of audio feeds based on the settings of the FSX radio 1.
-It can be used to tune Live ATC or any stream.
+LiveAtcX is a super-primitive tool to allow live streaming of audio feeds based on the settings of the FSX radios.
+It can be used to tune Live ATC or any stream while flying.
 
 There are 2 reasons for this tool:
 
@@ -7,18 +7,13 @@ There are 2 reasons for this tool:
 Otherwise, it would be simple to tune these streams in a browser window.
 2. It is cool to have the plane's radio tuning real ATC when not using it for RC4 ATC or vatsim.
 
-
-================================================
-To build, you need the JDK and Maven.
-From the top folder, run: mvn clean package
-
-This creates a zip file in the target folder.
+Note: I've been able to fix the joystick disconnect problem - but it's still cool to use the radios.
 
 To run, unzip the zip into a folder and run the run.bat file.
 
 To customize feeds, create a file called liveatcx.properties in your home folder. On windows, that is in you user folder, not your documents or desktop.
 
-The properties file can contain the FSX simconnect host and port and then a list of frequency/url pairs.
+The properties file contains the FSX simconnect host and port and then a list of frequency/url pairs.
 
 Here is the default built-in version that is used if you do not create your own file:
 
@@ -32,3 +27,16 @@ port=9017
 132500=http://d.liveatc.net/kmia_twr
 132600=http://d.liveatc.net/kjfk_gnd_twr
 132700=http://d.liveatc.net/kjfk_app_final
+
+You can find your favorite streams on liveatc.net and create your own liveatcx.properties file.
+
+LICENSES:
+The jsimconnect library is LGPL. The rest of the source is unlicensed.
+
+================================================
+To build from source, you need the JDK and Maven.
+From the top folder, run: mvn clean package
+
+This creates a zip file in the target folder.
+
+
