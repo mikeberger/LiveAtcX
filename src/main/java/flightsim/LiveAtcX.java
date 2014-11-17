@@ -32,6 +32,8 @@ public class LiveAtcX {
 	private Player player[] = new Player[2]; // object to play a live audio
 												// stream
 
+	private static int paused = 0;
+
 	// Properties file
 	static Properties props = new Properties();
 
@@ -93,6 +95,7 @@ public class LiveAtcX {
 
 		final int dataDefID = 1;
 		final int fourSeceventID = 1;
+		final int pauseId = 2;
 
 		// connect to simconnect
 		SimConnect sc = null;
@@ -117,6 +120,7 @@ public class LiveAtcX {
 
 				// get warned every 4 seconds when in sim mode
 				sc.subscribeToSystemEvent(fourSeceventID, "4sec");
+				sc.subscribeToSystemEvent(pauseId, "Pause");
 				DispatcherTask dt = new DispatcherTask(sc);
 
 				dt.addOpenHandler(new OpenHandler() {
@@ -134,6 +138,10 @@ public class LiveAtcX {
 										1, SimObjectType.USER);
 							} catch (IOException ioe) {
 							}
+						}
+						if (e.getEventID() == pauseId) {
+							// System.out.print("Paused: " + e.getData());
+							paused = e.getData();
 						}
 					}
 				});
@@ -164,9 +172,9 @@ public class LiveAtcX {
 						if (status2 != 0) {
 							freq2 = 0;
 						}
-						
-						updatePlayer(0,freq1);
-						updatePlayer(1,freq2);
+
+						updatePlayer(0, freq1);
+						updatePlayer(1, freq2);
 
 					}
 				});
@@ -175,6 +183,8 @@ public class LiveAtcX {
 				t.start();
 				t.join();
 				sc = null;
+				killPlayer(0);
+				killPlayer(1);
 			} catch (ConnectException e) {
 				try {
 					Thread.sleep(10000);
@@ -186,39 +196,54 @@ public class LiveAtcX {
 
 	}
 
-	private void updatePlayer(int playerId, int freq) {
-		// if the radio frequency is different from the last one
-		// that
-		// was processed, then
-		// see if we need to stream
-		if (open_freq[playerId] != freq) {
+	public void killPlayer(int playerId) {
+		if (player[playerId] != null && player[playerId].isAlive()) {
+			log.info("Kill old player:" + playerId);
+			player[playerId].terminate();
 
+			try {
+				player[playerId].join();
+				player[playerId] = null;
+				open_freq[playerId] = 0;
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
+
+	public void startPlayer(int playerId, String url) {
+		if (url != null) {
+			log.info("New url=" + url);
+
+			// there is a URL, so start streaming from it
+			player[playerId] = new Player(url);
+			player[playerId].start();
+		}
+	}
+
+	private void updatePlayer(int playerId, int freq) {
+
+		if (paused == 1) {
+			
+			killPlayer(playerId);
+
+		} else if (open_freq[playerId] != freq) {
+
+			/*
+			 * if the radio frequency is different from the last one that was
+			 * processed, then see if we need to stream
+			 */
 			open_freq[playerId] = freq;
 			log.info("new freq=" + freq);
 
 			// kill the existing stream player if one is active
-			if (player[playerId] != null && player[playerId].isAlive()) {
-				log.info("Kill old player:" + playerId);
-				player[playerId].terminate();
-
-				try {
-					player[playerId].join();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-			}
+			killPlayer(playerId);
 
 			// lookup the new frequency to see if there is a URL
 			// for it
 			String url = props.getProperty(Integer.toString(freq / 1000));
 
-			if (url != null) {
-				log.info("New url=" + url);
-
-				// there is a URL, so start streaming from it
-				player[playerId] = new Player(url);
-				player[playerId].start();
-			}
+			startPlayer(playerId, url);
 
 		} else if (player[playerId] != null && !player[playerId].isAlive()) {
 
@@ -228,11 +253,8 @@ public class LiveAtcX {
 			// a player on the same freq
 			String url = props.getProperty(Integer.toString(freq / 1000));
 
-			if (url != null) {
-				log.info("New url=" + url);
-				player[playerId] = new Player(url);
-				player[playerId].start();
-			}
+			startPlayer(playerId, url);
+
 		}
 
 	}
