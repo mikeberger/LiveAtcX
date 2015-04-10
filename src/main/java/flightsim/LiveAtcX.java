@@ -233,11 +233,11 @@ public class LiveAtcX {
 			 * if the radio frequency is different from the last one that was
 			 * processed, then see if we need to stream
 			 */
-			open_freq[playerId] = freq;
 			log.info("new freq=" + freq);
 
 			// kill the existing stream player if one is active
 			killPlayer(playerId);
+			open_freq[playerId] = freq;
 
 			// lookup the new frequency to see if there is a URL
 			// for it
