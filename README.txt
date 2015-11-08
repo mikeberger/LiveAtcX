@@ -17,8 +17,8 @@ The properties file contains the FSX simconnect host and port and then a list of
 
 Here is the default built-in version that is used if you do not create your own file:
 
-host=localhost
-port=9017
+#host=localhost
+#port=9017
 132000=http://d.liveatc.net/zbw_remsen
 132100=http://d.liveatc.net/kblm1
 132200=http://d.liveatc.net/kpbi
