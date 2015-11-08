@@ -88,10 +88,11 @@ public class LiveAtcX {
 
 		loadProperties();
 
-		String host = props.getProperty("host", "localhost");
-		String port = props.getProperty("port", "9017");
-
-		int p = Integer.parseInt(port);
+		String host = props.getProperty("host", null);
+		String port = props.getProperty("port", null);
+		int p = 0;
+		if( port != null)
+			p = Integer.parseInt(port);
 
 		final int dataDefID = 1;
 		final int fourSeceventID = 1;
@@ -102,7 +103,10 @@ public class LiveAtcX {
 		while (sc == null) {
 			log.info("Trying to connect...");
 			try {
-				sc = new SimConnect("LiveAtcX", host, p);
+				if( host != null && port != null )
+					sc = new SimConnect("LiveAtcX", host, p);
+				else
+					sc = new SimConnect("LiveAtcX");
 
 				// build data definition
 				sc.addToDataDefinition(dataDefID, "ATC TYPE", null,

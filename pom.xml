@@ -15,8 +15,8 @@
 			<groupId>jsimconnect</groupId>
 			<artifactId>jsimconnect</artifactId>
 			<version>0.7</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/jsimconnect.jar</systemPath>
+			<!--  <scope>system</scope>
+			<systemPath>${project.basedir}/lib/jsimconnect.jar</systemPath>-->
 		</dependency>
 	</dependencies>
 	<build>
