@@ -1,3 +1,11 @@
+This package contains 3 tools:
+
+LiveAtcX - a simple tool to allow live streaming of audio feeds based on the settings of the FSX radios. It can be used to tune Live ATC or any stream while flying.
+ComSync - a tool to always set the com 1 frequencies to whatever is tuned to com 2. It's only use is to allow com 2 to be used to tune frequencies for RC4 - which only uses com 1. Sometimes, it's nicer to use com2 - i.e. when com1 is in the GTN750 and you would rather use a plain old radio with knobs.
+AutoMask - a tool to mask the elevator trim input when auto pilot is on. Some aircraft do not mask the elevator trim when autopilot is on. If the trim is tied to a wheel or other lever, and a potentiometer sends in any signals while the autopilot is on, the aircraft will shoot upwards or downwards depending on the difference between the current auto pilot trim and the bad signal.
+
+====
+
 LiveAtcX is a super-primitive tool to allow live streaming of audio feeds based on the settings of the FSX radios.
 It can be used to tune Live ATC or any stream while flying.
 
